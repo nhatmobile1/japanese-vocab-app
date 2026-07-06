@@ -49,7 +49,7 @@ Database file: `data/vocab.db` via `better-sqlite3`. Phase 3 SRS tables live in 
   - `source_ref`: lesson date (`2025-06-02`) or chapter (`Quartet-1 L5 読1`)
   - `file`, `line` (for provenance / jump-to-source)
   - `parent_id` — sub-bullets (example sentences under a word) attach to their parent entry
-- **`words`** — grouping by normalized term so one word aggregates all its occurrences (textbook chapters + every lesson date).
+- **`words`** — a table computed during indexing: one row per normalized term with aggregate columns (occurrence count, sources, first/last seen), so one word aggregates all its occurrences (textbook chapters + every lesson date). Rebuilt alongside `entries`.
 - **FTS5 index** over term, reading, gloss, raw with Japanese-aware normalization: katakana→hiragana folding; parenthesized readings extracted so かんぷ, 還付, and "refund" all match the same row; prefix matching enabled.
 
 **Parser resilience:** tolerate full-width spaces, NBSP, `）-` glosses, bare unglossed bullets (indexed anyway — searchable by Japanese), nested bullets, `＝`/`VS` lines. Any line that can't be classified is still indexed as raw text (never invisible), and an "unparsed lines" report page lists what fell through so the parser can improve over time.
