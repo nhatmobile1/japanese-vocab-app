@@ -28,7 +28,7 @@ Vault path: `/Users/nhattran/documents/obsidian-main/nhat-mind/efforts/japanese-
 
 ## Approach (decided)
 
-Local web app: Node.js/TypeScript, indexer → SQLite (FTS5) → Hono API server → Vite/React frontend. Chosen over a fully static client-side app (SRS/stats need a real store) and an Obsidian plugin (constrained UI, locks future iteration).
+Local web app: Node.js/TypeScript, indexer → SQLite → Hono API server → Vite/React frontend. Chosen over a fully static client-side app (SRS/stats need a real store) and an Obsidian plugin (constrained UI, locks future iteration).
 
 ## Architecture
 
@@ -50,7 +50,7 @@ Database file: `data/vocab.db` via `better-sqlite3`. Phase 3 SRS tables live in 
   - `file`, `line` (for provenance / jump-to-source)
   - `parent_id` — sub-bullets (example sentences under a word) attach to their parent entry
 - **`words`** — a table computed during indexing: one row per normalized term with aggregate columns (occurrence count, sources, first/last seen), so one word aggregates all its occurrences (textbook chapters + every lesson date). Rebuilt alongside `entries`.
-- **FTS5 index** over term, reading, gloss, raw with Japanese-aware normalization: katakana→hiragana folding; parenthesized readings extracted so かんぷ, 還付, and "refund" all match the same row; prefix matching enabled.
+- **Search index:** pre-normalized folded columns (`term_f`, `reading_f`, `gloss_f`, `raw_f` — NFKC, lowercase, katakana→hiragana, whitespace stripped) queried with indexed `LIKE` scans, ranked in JS. Parenthesized readings are extracted at parse time so かんぷ, 還付, and "refund" all match the same row. *(Amended from FTS5: FTS5's tokenizers can't substring-match 2-character Japanese queries — the most common case — while a LIKE scan over ~16k rows returns in single-digit milliseconds. The query layer is isolated in one module so this can be revisited if the corpus grows 10×.)*
 
 **Parser resilience:** tolerate full-width spaces, NBSP, `）-` glosses, bare unglossed bullets (indexed anyway — searchable by Japanese), nested bullets, `＝`/`VS` lines. Any line that can't be classified is still indexed as raw text (never invisible), and an "unparsed lines" report page lists what fell through so the parser can improve over time.
 
