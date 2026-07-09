@@ -68,4 +68,12 @@ describe('parseLessonFile', () => {
   test('counts: 5 top-level entries across both days (涙, もう1年, 手作り, 〜倍, sentence)', () => {
     expect(result.entries).toHaveLength(5);
   });
+
+  test('bullets with no callout header go to unparsed', () => {
+    const r = parseLessonFile('## 2025-01-01\n\n> -   迷子（まいご）- lost child\n');
+    expect(r.entries).toHaveLength(0);
+    expect(r.unparsed).toEqual([
+      { line: 3, text: '> -   迷子（まいご）- lost child', reason: 'bullet outside any callout' },
+    ]);
+  });
 });

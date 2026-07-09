@@ -58,7 +58,10 @@ export function parseLessonFile(content: string): ParseResult {
       unparsed.push({ line: lineNo, text: line, reason: 'bullet in unknown callout' });
       return;
     }
-    if (!kind) return;
+    if (!kind) {
+      unparsed.push({ line: lineNo, text: line, reason: 'bullet outside any callout' });
+      return;
+    }
     if (!date) {
       unparsed.push({ line: lineNo, text: line, reason: 'bullet before any date heading' });
       return;
