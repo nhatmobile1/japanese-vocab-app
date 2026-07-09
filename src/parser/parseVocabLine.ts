@@ -12,7 +12,7 @@ export interface VocabLineParts {
 const SEP_RE = /）[-–—][\s　]|[\s　][-–—][\s　]/;
 
 export function parseVocabLine(text: string): VocabLineParts {
-  const cleaned = text.replace(/\*/g, '').replace(/ /g, ' ').trim();
+  const cleaned = text.replace(/\*/g, '').replace(/ /g, ' ').trim();
 
   const m = SEP_RE.exec(cleaned);
   let head = cleaned;

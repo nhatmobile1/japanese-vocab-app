@@ -59,7 +59,7 @@ describe('parseVocabLine', () => {
   });
 
   test('strips bold markers and NBSP', () => {
-    expect(parseVocabLine('**梅雨（つゆ）** - rainy season')).toEqual({
+    expect(parseVocabLine('**梅雨（つゆ）** - rainy season')).toEqual({
       term: '梅雨',
       reading: 'つゆ',
       gloss: 'rainy season',
