@@ -80,8 +80,7 @@ export function search(
          AND (e.term_f LIKE @ja ESCAPE '\\'
            OR e.reading_f LIKE @ja ESCAPE '\\'
            OR e.gloss_f LIKE @en ESCAPE '\\'
-           OR e.raw_f LIKE @ja ESCAPE '\\')
-       LIMIT 3000`,
+           OR e.raw_f LIKE @ja ESCAPE '\\')`,
     )
     .all({ kind, ja: likeJa, en: likeEn }) as Row[];
 
