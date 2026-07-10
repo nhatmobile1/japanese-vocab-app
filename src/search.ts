@@ -43,13 +43,13 @@ function glossWords(glossF: string | null): string[] {
 
 function scoreRow(r: Row, qJa: string, qEn: string, now: Date): number {
   let s: number;
-  if (r.term_f === qJa || r.reading_f === qJa) s = 100;
-  else if (r.gloss_f === qEn) s = 90;
-  else if (r.term_f?.startsWith(qJa) || r.reading_f?.startsWith(qJa)) s = 60;
-  else if (glossWords(r.gloss_f).some((w) => w.startsWith(qEn))) s = 50;
-  else if (r.term_f?.includes(qJa) || r.reading_f?.includes(qJa)) s = 30;
-  else if (r.gloss_f?.includes(qEn)) s = 20;
-  else s = 10; // matched only in raw text
+  if (r.term_f === qJa || r.reading_f === qJa) s = 1000;
+  else if (r.gloss_f === qEn) s = 900;
+  else if (r.term_f?.startsWith(qJa) || r.reading_f?.startsWith(qJa)) s = 600;
+  else if (glossWords(r.gloss_f).some((w) => w.startsWith(qEn))) s = 500;
+  else if (r.term_f?.includes(qJa) || r.reading_f?.includes(qJa)) s = 300;
+  else if (r.gloss_f?.includes(qEn)) s = 200;
+  else s = 100; // matched only in raw text
 
   s += Math.min(r.occurrence_count ?? 1, 10);
   if (r.last_seen && now.getTime() - Date.parse(r.last_seen) < 90 * 86400e3) s += 5;

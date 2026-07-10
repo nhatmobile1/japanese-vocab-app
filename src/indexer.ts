@@ -20,11 +20,23 @@ export function routeFile(relPath: string): Route | null {
 export function listVaultFiles(vaultPath: string): string[] {
   const out: string[] = [];
   const walk = (dir: string) => {
-    for (const name of fs.readdirSync(dir)) {
+    let entries: fs.Dirent[];
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch (err) {
+      console.error(`[indexer] failed to read directory ${dir}:`, err);
+      return;
+    }
+    for (const entry of entries) {
+      const name = entry.name;
       if (name.startsWith('.') || name.startsWith('_')) continue;
       const abs = path.join(dir, name);
-      if (fs.statSync(abs).isDirectory()) walk(abs);
-      else if (name.endsWith('.md')) out.push(path.relative(vaultPath, abs));
+      try {
+        if (entry.isDirectory()) walk(abs);
+        else if (name.endsWith('.md')) out.push(path.relative(vaultPath, abs));
+      } catch (err) {
+        console.error(`[indexer] failed to process ${abs}:`, err);
+      }
     }
   };
   walk(vaultPath);
@@ -58,7 +70,7 @@ function insertEntries(db: Database.Database, relPath: string, entries: ParsedEn
       file: relPath,
       line: e.line,
       parentId,
-      normTerm: e.term ? normalizeTerm(e.term) : null,
+      normTerm: e.term ? normalizeTerm(e.term) || null : null,
       termF: e.term ? foldForSearch(e.term) : null,
       readingF: e.reading ? foldForSearch(e.reading) : null,
       glossF: e.gloss ? e.gloss.normalize('NFKC').toLowerCase() : null,

@@ -28,9 +28,10 @@ if (!vaultExists) {
 }
 
 const app = createApp(db);
+app.get('/api/*', (c) => c.json({ error: 'not found' }, 404));
 app.use('/*', serveStatic({ root: './web/dist' }));
 app.get('*', serveStatic({ path: './web/dist/index.html' }));
 
-serve({ fetch: app.fetch, port: config.port }, () => {
+serve({ fetch: app.fetch, port: config.port, hostname: '127.0.0.1' }, () => {
   console.log(`[server] http://localhost:${config.port}`);
 });

@@ -13,6 +13,7 @@ Some prose that is not indexed.
 
 > [!tip]+ Pattern
 > -   〜させる - to make/let someone do
+>     -   例（れい） - example
 `;
 
 describe('parseGrammarNote', () => {
@@ -25,6 +26,16 @@ describe('parseGrammarNote', () => {
       sourceRef: 'Grammar-Quick-Reference',
       section: '1. Causative Form 〜させる',
       gloss: 'to make/let someone do',
+    });
+  });
+
+  test('nested bullet inside the callout attaches as a child of the preceding entry', () => {
+    const r = parseGrammarNote(NOTE, 'Grammar-Quick-Reference.md');
+    expect(r.entries[0].children).toHaveLength(1);
+    expect(r.entries[0].children[0]).toMatchObject({
+      term: '例',
+      reading: 'れい',
+      gloss: 'example',
     });
   });
 

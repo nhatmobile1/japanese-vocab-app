@@ -11,7 +11,7 @@ export function startWatcher(db: Database.Database, vaultPath: string): FSWatche
   const schedule = (absPath: string, gone: boolean) => {
     if (!absPath.endsWith('.md')) return;
     const rel = path.relative(vaultPath, absPath);
-    if (path.basename(rel).startsWith('_')) return;
+    if (rel.split(path.sep).some((seg) => seg.startsWith('_') || seg.startsWith('.'))) return;
     clearTimeout(timers.get(rel));
     timers.set(
       rel,
