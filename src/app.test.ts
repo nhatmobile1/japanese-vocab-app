@@ -59,6 +59,11 @@ describe('GET /api/word/:normTerm', () => {
     const res = await app.request('/api/word/zzzzzz');
     expect(res.status).toBe(404);
   });
+
+  test('terms containing a literal % do not crash the route', async () => {
+    const res = await app.request(`/api/word/${encodeURIComponent('10%引き')}`);
+    expect(res.status).toBe(404);
+  });
 });
 
 describe('GET /api/status and /api/unparsed', () => {

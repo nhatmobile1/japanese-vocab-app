@@ -13,7 +13,7 @@ export function createApp(db: Database.Database): Hono {
   });
 
   app.get('/api/word/:normTerm', (c) => {
-    const normTerm = decodeURIComponent(c.req.param('normTerm'));
+    const normTerm = c.req.param('normTerm');
     const word = db.prepare('SELECT * FROM words WHERE norm_term = ?').get(normTerm);
     const parents = db
       .prepare(
