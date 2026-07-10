@@ -4,7 +4,7 @@ import type { Entry, SearchResultWord, WordResponse } from './types';
 
 function EntryLine({ e }: { e: Entry }) {
   return (
-    <li className="entry-line">
+    <div className="entry-line">
       <span className="entry-raw">{e.raw}</span>
       {e.children && e.children.length > 0 && (
         <ul className="entry-children">
@@ -15,7 +15,7 @@ function EntryLine({ e }: { e: Entry }) {
           ))}
         </ul>
       )}
-    </li>
+    </div>
   );
 }
 
