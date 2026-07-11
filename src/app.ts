@@ -79,7 +79,7 @@ export function createApp(db: Database.Database): Hono {
   app.get('/api/browse', (c) => {
     const kind = c.req.query('kind') ?? '';
     const sort = c.req.query('sort') || 'recent';
-    const page = Math.max(0, Math.trunc(Number(c.req.query('page')) || 0));
+    const page = Math.min(1_000_000, Math.max(0, Math.trunc(Number(c.req.query('page')) || 0)));
 
     if (kind !== 'vocab' && kind !== 'grammar' && kind !== 'sentence') {
       return c.json({ error: 'invalid kind' }, 400);
@@ -98,7 +98,7 @@ export function createApp(db: Database.Database): Hono {
       return c.json({ total, page, results });
     }
 
-    if (!(sort in WORD_SORTS)) return c.json({ error: 'invalid sort' }, 400);
+    if (!Object.hasOwn(WORD_SORTS, sort)) return c.json({ error: 'invalid sort' }, 400);
     if (sort === 'chapter' && kind !== 'vocab') {
       return c.json({ error: 'chapter sort is vocab-only' }, 400);
     }

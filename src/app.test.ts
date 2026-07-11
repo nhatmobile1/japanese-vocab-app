@@ -139,4 +139,15 @@ describe('GET /api/browse', () => {
     const body = (await res.json()) as { results: unknown[] };
     expect(body.results).toEqual([]);
   });
+
+  test('prototype-chain sort keys are rejected with 400', async () => {
+    expect((await app.request('/api/browse?kind=vocab&sort=constructor')).status).toBe(400);
+    expect((await app.request('/api/browse?kind=vocab&sort=hasOwnProperty')).status).toBe(400);
+  });
+
+  test('astronomical page numbers return empty results, not an error', async () => {
+    const res = await app.request('/api/browse?kind=vocab&sort=recent&page=1e20');
+    expect(res.status).toBe(200);
+    expect(((await res.json()) as { results: unknown[] }).results).toEqual([]);
+  });
 });
