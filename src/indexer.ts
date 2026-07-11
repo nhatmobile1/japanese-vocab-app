@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type Database from 'better-sqlite3';
-import { foldForSearch, normalizeTerm } from './lib/japanese.js';
+import { foldForSearch, isKanaOnly, normalizeTerm } from './lib/japanese.js';
 import { parseGrammarNote } from './parser/parseGrammarNote.js';
 import { parseLessonFile } from './parser/parseLessonFile.js';
 import { parseTextbookFile } from './parser/parseTextbookFile.js';
@@ -98,6 +98,17 @@ function indexFile(db: Database.Database, vaultPath: string, relPath: string): n
   return n;
 }
 
+/** Sortable textbook key from the first textbook source: Genki L8 → "1-08", Quartet I L5 → "2-05". */
+function chapterSortKey(sources: { sourceType: string; sourceRef: string }[]): string | null {
+  for (const s of sources) {
+    if (s.sourceType !== 'genki' && s.sourceType !== 'quartet') continue;
+    const m = s.sourceRef.match(/L(\d+)/i);
+    if (!m) continue;
+    return `${s.sourceType === 'genki' ? '1' : '2'}-${m[1].padStart(2, '0')}`;
+  }
+  return null;
+}
+
 export function rebuildWords(db: Database.Database): void {
   db.exec('DELETE FROM words');
   const rows = db
@@ -110,6 +121,7 @@ export function rebuildWords(db: Database.Database): void {
     term: string;
     reading: string | null;
     gloss: string | null;
+    kind: string;
     source_type: string;
     source_ref: string;
   }>;
@@ -122,9 +134,9 @@ export function rebuildWords(db: Database.Database): void {
   }
 
   const ins = db.prepare(`
-    INSERT INTO words (norm_term, term, reading, gloss, occurrence_count, lesson_count,
-                       sources, first_seen, last_seen)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO words (norm_term, term, reading, gloss, kind, occurrence_count, lesson_count,
+                       sources, first_seen, last_seen, reading_sort, chapter_sort)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   for (const [normTerm, group] of groups) {
@@ -146,16 +158,25 @@ export function rebuildWords(db: Database.Database): void {
         : (a.sourceType === 'lesson' ? 1 : 0) - (b.sourceType === 'lesson' ? 1 : 0),
     );
     const lessonRefs = [...new Set(group.filter((r) => r.source_type === 'lesson').map((r) => r.source_ref))].sort();
+
+    const vocabCount = group.filter((r) => r.kind === 'vocab').length;
+    const kind = vocabCount * 2 >= group.length ? 'vocab' : 'grammar';
+    const anyReading = group.find((r) => r.reading)?.reading ?? null;
+    const readingSort = anyReading ?? (isKanaOnly(normTerm) ? normTerm : null);
+
     ins.run(
       normTerm,
       display.term,
       display.reading,
       display.gloss,
+      kind,
       group.length,
       lessonRefs.length,
       JSON.stringify(sources),
       lessonRefs[0] ?? null,
       lessonRefs[lessonRefs.length - 1] ?? null,
+      readingSort,
+      chapterSortKey(sources),
     );
   }
 }

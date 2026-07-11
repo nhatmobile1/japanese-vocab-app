@@ -64,6 +64,34 @@ describe('indexVault', () => {
   });
 });
 
+describe('words sort metadata', () => {
+  const get = (sql: string) =>
+    db.prepare(sql).get() as {
+      kind: string;
+      reading_sort: string | null;
+      chapter_sort: string | null;
+    };
+
+  test('kind is the dominant kind of the group', () => {
+    expect(get(`SELECT kind FROM words WHERE term = '還付'`).kind).toBe('vocab');
+    expect(get(`SELECT kind FROM words WHERE norm_term = '倍'`).kind).toBe('grammar');
+  });
+
+  test('reading_sort uses the reading, falls back to kana-only norm terms, else NULL', () => {
+    expect(get(`SELECT reading_sort FROM words WHERE term = '還付'`).reading_sort).toBe('かんぷ');
+    // The grammar-note bullet 〜させる has no furigana; its norm_term させる is kana-only.
+    expect(get(`SELECT reading_sort FROM words WHERE norm_term = 'させる'`).reading_sort).toBe('させる');
+    // もう1年 has no kana rendering (digit + kanji) → NULL, sorted last.
+    expect(get(`SELECT reading_sort FROM words WHERE term = 'もう1年'`).reading_sort).toBe(null);
+  });
+
+  test('chapter_sort derives from the first textbook source', () => {
+    expect(get(`SELECT chapter_sort FROM words WHERE term = '雨'`).chapter_sort).toBe('1-08');
+    expect(get(`SELECT chapter_sort FROM words WHERE term = '流れる'`).chapter_sort).toBe('2-05');
+    expect(get(`SELECT chapter_sort FROM words WHERE term = '還付'`).chapter_sort).toBe(null);
+  });
+});
+
 describe('reindexFile / removeFile', () => {
   test('reindexing a changed file replaces its rows', () => {
     const rel = 'Vocabulary/Genki/Genki-L08.md';

@@ -1,5 +1,9 @@
 import Database from 'better-sqlite3';
 
+// v2: words gained kind / reading_sort / chapter_sort. words is a rebuild
+// artifact, so migration is just "drop and let rebuildWords repopulate".
+const SCHEMA_VERSION = 2;
+
 export function openDb(dbPath: string): Database.Database {
   const db = new Database(dbPath);
   db.pragma('journal_mode = WAL');
@@ -8,6 +12,11 @@ export function openDb(dbPath: string): Database.Database {
 }
 
 export function createSchema(db: Database.Database): void {
+  const version = db.pragma('user_version', { simple: true }) as number;
+  if (version < SCHEMA_VERSION) {
+    db.exec('DROP TABLE IF EXISTS words;');
+    db.pragma(`user_version = ${SCHEMA_VERSION}`);
+  }
   db.exec(`
     CREATE TABLE IF NOT EXISTS entries (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,12 +46,16 @@ export function createSchema(db: Database.Database): void {
       term TEXT NOT NULL,
       reading TEXT,
       gloss TEXT,
+      kind TEXT NOT NULL CHECK (kind IN ('vocab','grammar')),
       occurrence_count INTEGER NOT NULL,
       lesson_count INTEGER NOT NULL,
       sources TEXT NOT NULL,
       first_seen TEXT,
-      last_seen TEXT
+      last_seen TEXT,
+      reading_sort TEXT,
+      chapter_sort TEXT
     );
+    CREATE INDEX IF NOT EXISTS idx_words_kind ON words(kind);
 
     CREATE TABLE IF NOT EXISTS unparsed (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
