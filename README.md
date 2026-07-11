@@ -28,6 +28,15 @@ cache, rebuilt from the vault on every start.
 | `VAULT_PATH` | `/Users/nhattran/documents/obsidian-main/nhat-mind/efforts/japanese-learning` |
 | `DB_PATH`    | `data/vocab.db`                                                |
 | `PORT`       | `3456`                                                         |
+| `HOST`       | `127.0.0.1` — localhost-only. Set `HOST=0.0.0.0` to reach the app from a phone/tablet (use only on a trusted network or over Tailscale; the vault is personal) |
+
+## Phone / second device
+
+The app is local-first and is not deployable to static hosts (Vercel etc.) —
+the API, SQLite index, and vault all live on this machine. To use it from a
+phone or tablet, install [Tailscale](https://tailscale.com) on both devices,
+start the app with `HOST=0.0.0.0 npm start`, and open
+`http://<laptop-tailscale-name>:3456` on the phone.
 
 ## Phase 2/3 (planned)
 

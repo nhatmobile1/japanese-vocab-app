@@ -32,6 +32,9 @@ app.get('/api/*', (c) => c.json({ error: 'not found' }, 404));
 app.use('/*', serveStatic({ root: './web/dist' }));
 app.get('*', serveStatic({ path: './web/dist/index.html' }));
 
-serve({ fetch: app.fetch, port: config.port, hostname: '127.0.0.1' }, () => {
-  console.log(`[server] http://localhost:${config.port}`);
+serve({ fetch: app.fetch, port: config.port, hostname: config.host }, () => {
+  console.log(`[server] http://localhost:${config.port} (bound to ${config.host})`);
+  if (config.host !== '127.0.0.1') {
+    console.warn('[server] non-localhost bind: the app is reachable by other devices on this network');
+  }
 });
