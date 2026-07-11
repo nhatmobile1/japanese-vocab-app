@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p web/tsconfig.json"
   },
   "dependencies": {
+    "@fontsource/noto-sans-jp": "^5.2.9",
     "@hono/node-server": "^2.0.8",
     "better-sqlite3": "^12.11.1",
     "chokidar": "^5.0.0",

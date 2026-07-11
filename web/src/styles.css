@@ -9,9 +9,8 @@
     - Zero-radius, hairline-divided rows instead of rounded "cards" with shadows.
     - Selection is a solid inverted block (like a stamped/highlighted line), not
       a tinted rounded card — reads instantly at a glance.
-    - Mincho (serif) for the headline term vs. Gothic (sans) for UI chrome —
-      the classic Japanese editorial pairing — using only system font stacks
-      (no network font loading; this app must be instant and work offline).
+    - Noto Sans JP everywhere (bundled locally, no network fonts) — the user
+      found Mincho hard to read; light theme is the default, dark is opt-in.
     - Tabular/monospace for badges & dates, reinforcing an "instrument panel" feel.
 */
 
@@ -27,27 +26,24 @@
   --selected-ink: #ffffff;
   --focus: #c31f0e;
 
-  --font-ui: 'Hiragino Sans', 'Noto Sans JP', -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', 'Hiragino Sans',
-    'Noto Sans JP', serif;
+  --font-ui: 'Noto Sans JP', 'Hiragino Sans', -apple-system, 'Segoe UI', sans-serif;
+  --font-display: var(--font-ui);
   --font-mono: ui-monospace, 'SF Mono', 'Menlo', 'Cica', monospace;
 
   font-size: 16px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0c0d0f;
-    --ink: #eeeeee;
-    --muted: #96999f;
-    --accent: #ff5133;
-    --accent-ink: #0c0d0f;
-    --line: #2a2c30;
-    --line-strong: #eeeeee;
-    --selected-bg: #ff5133;
-    --selected-ink: #0c0d0f;
-    --focus: #ff5133;
-  }
+:root[data-theme='dark'] {
+  --bg: #101114;
+  --ink: #e8e8e6;
+  --muted: #9a9da3;
+  --accent: #ff6a4d;
+  --accent-ink: #101114;
+  --line: #2a2c30;
+  --line-strong: #e8e8e6;
+  --selected-bg: #26292e;
+  --selected-ink: #ffffff;
+  --focus: #ff6a4d;
 }
 
 * {
@@ -110,6 +106,36 @@ body {
 .search-input:focus {
   outline: none;
   border-bottom-color: var(--focus);
+}
+
+.header-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.header-row .search-input {
+  flex: 1;
+}
+
+.theme-toggle {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-size: 1rem;
+  padding: 0 0.75rem;
+  cursor: pointer;
+  font-family: var(--font-ui);
+}
+
+.theme-toggle:hover {
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .filter-tabs {

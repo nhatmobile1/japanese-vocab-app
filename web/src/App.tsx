@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { searchApi } from './api';
 import type { SearchResultWord } from './types';
 import WordDetail from './WordDetail';
+import ThemeToggle from './ThemeToggle';
 
 const KINDS = [
   { key: 'all', label: 'All' },
@@ -91,16 +92,19 @@ export default function App() {
   return (
     <div className="app">
       <header className="search-header">
-        <input
-          ref={inputRef}
-          autoFocus
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          onKeyDown={onInputKey}
-          placeholder="還付 · かんぷ · refund …"
-          className="search-input"
-          spellCheck={false}
-        />
+        <div className="header-row">
+          <input
+            ref={inputRef}
+            autoFocus
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            onKeyDown={onInputKey}
+            placeholder="還付 · かんぷ · refund …"
+            className="search-input"
+            spellCheck={false}
+          />
+          <ThemeToggle />
+        </div>
         <nav className="filter-tabs">
           {KINDS.map((k) => (
             <button
