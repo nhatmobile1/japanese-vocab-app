@@ -14,6 +14,7 @@ entry_count: 113
 
 > [!example]+ Vocabulary (62)
 > -   流れる（ながれる） - to flow
+>     -   例文（れいぶん） - example sentence
 > -   空く（［～が］あく） - to become available [vi.]
 `;
 
@@ -52,6 +53,16 @@ describe('parseTextbookFile', () => {
       sourceType: 'quartet',
       sourceRef: 'Quartet I L5',
       section: '読み 1 (読1)',
+    });
+  });
+
+  test('nested bullet inside a callout attaches as a child of the preceding top-level entry', () => {
+    const r = parseTextbookFile(QUARTET);
+    expect(r.entries[0].children).toHaveLength(1);
+    expect(r.entries[0].children[0]).toMatchObject({
+      term: '例文',
+      reading: 'れいぶん',
+      gloss: 'example sentence',
     });
   });
 

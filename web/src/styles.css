@@ -1,0 +1,341 @@
+/*
+  Design direction: Swiss/editorial precision meets a Japanese hanko-seal accent.
+  This is a glance-at-a-glance instrument used mid-lesson, next to a video call —
+  not a "cozy" reading app. Choices favor sharp contrast, hairline structure, and
+  instant scanability over softness:
+    - Pure ink/white (dark: near-black) instead of cream/off-white backgrounds.
+    - A single saturated vermillion (朱色 / shu-iro, the hanko-stamp red) as the
+      one accent color — high-chroma, not a muted terracotta/coral.
+    - Zero-radius, hairline-divided rows instead of rounded "cards" with shadows.
+    - Selection is a solid inverted block (like a stamped/highlighted line), not
+      a tinted rounded card — reads instantly at a glance.
+    - Mincho (serif) for the headline term vs. Gothic (sans) for UI chrome —
+      the classic Japanese editorial pairing — using only system font stacks
+      (no network font loading; this app must be instant and work offline).
+    - Tabular/monospace for badges & dates, reinforcing an "instrument panel" feel.
+*/
+
+:root {
+  --bg: #ffffff;
+  --ink: #101114;
+  --muted: #5b5f66;
+  --accent: #c31f0e;
+  --accent-ink: #ffffff;
+  --line: #d8dade;
+  --line-strong: #101114;
+  --selected-bg: #101114;
+  --selected-ink: #ffffff;
+  --focus: #c31f0e;
+
+  --font-ui: 'Hiragino Sans', 'Noto Sans JP', -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', 'Hiragino Sans',
+    'Noto Sans JP', serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Menlo', 'Cica', monospace;
+
+  font-size: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c0d0f;
+    --ink: #eeeeee;
+    --muted: #96999f;
+    --accent: #ff5133;
+    --accent-ink: #0c0d0f;
+    --line: #2a2c30;
+    --line-strong: #eeeeee;
+    --selected-bg: #ff5133;
+    --selected-ink: #0c0d0f;
+    --focus: #ff5133;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .result,
+  .tab,
+  .search-input,
+  .back {
+    transition:
+      background-color 120ms ease,
+      color 120ms ease,
+      border-color 120ms ease;
+  }
+}
+
+.app {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1.75rem 1.25rem 4rem;
+}
+
+/* --- Search header ---------------------------------------------------- */
+
+.search-header {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  padding: 0 0 0.9rem;
+  border-bottom: 2px solid var(--line-strong);
+}
+
+.search-input {
+  width: 100%;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  padding: 0.55rem 0.1rem;
+  border: none;
+  border-bottom: 2px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+}
+
+.search-input::placeholder {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.search-input:focus {
+  outline: none;
+  border-bottom-color: var(--focus);
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 0.85rem;
+}
+
+.tab {
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  padding: 0.1rem 0 0.3rem;
+  border-radius: 0;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tab:hover {
+  color: var(--ink);
+}
+
+.tab:focus-visible,
+.back:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.tab.active {
+  border-bottom-color: var(--accent);
+  color: var(--ink);
+}
+
+/* --- Results list ------------------------------------------------------ */
+
+.results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.result {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  padding: 0.65rem 0.5rem;
+  border-radius: 0;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+}
+
+.result.selected {
+  background: var(--selected-bg);
+  color: var(--selected-ink);
+  border-bottom-color: var(--selected-bg);
+}
+
+.term {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.reading {
+  color: var(--accent);
+  white-space: nowrap;
+  font-size: 0.92rem;
+}
+
+.result.selected .reading {
+  color: inherit;
+  opacity: 0.75;
+}
+
+.gloss {
+  color: var(--muted);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result.selected .gloss {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.badges {
+  display: flex;
+  gap: 0.3rem;
+  flex-shrink: 0;
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  border-radius: 0;
+  padding: 0.12rem 0.4rem;
+  white-space: nowrap;
+}
+
+.result.selected .badge {
+  border-color: var(--selected-ink);
+  color: var(--selected-ink);
+  opacity: 0.85;
+}
+
+.empty,
+.error {
+  color: var(--muted);
+  padding: 1.1rem 0.5rem;
+  list-style: none;
+}
+
+.error {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* --- Word detail --------------------------------------------------------*/
+
+.word-detail {
+  padding-top: 1.1rem;
+}
+
+.back {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+.detail-term {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 600;
+  margin: 0.75rem 0 0;
+  line-height: 1.15;
+}
+
+.detail-reading {
+  font-family: var(--font-ui);
+  font-size: 1.05rem;
+  color: var(--accent);
+  margin-left: 0.85rem;
+  font-weight: 400;
+}
+
+.detail-gloss {
+  color: var(--muted);
+  font-size: 1.05rem;
+  margin-top: 0.35rem;
+}
+
+.word-detail h2 {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  margin: 1.85rem 0 0.6rem;
+  border-bottom: 2px solid var(--line-strong);
+  padding-bottom: 0.3rem;
+}
+
+.word-detail ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.occurrence {
+  padding: 0.5rem 0;
+  display: flex;
+  gap: 0.7rem;
+  align-items: baseline;
+  border-bottom: 1px solid var(--line);
+}
+
+.occurrence .badge.date {
+  font-variant-numeric: tabular-nums;
+}
+
+.section {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+}
+
+.entry-line {
+  flex: 1;
+}
+
+.entry-raw {
+  line-height: 1.65;
+}
+
+.entry-children {
+  margin-top: 0.3rem;
+  padding-left: 1rem !important;
+  border-left: 2px solid var(--line);
+}
+
+.entry-raw.child {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.mention .entry-raw {
+  color: var(--muted);
+}
