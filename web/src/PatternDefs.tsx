@@ -48,12 +48,12 @@ export default function PatternDefs() {
 /** A band that shows the user's chosen pattern (CSS picks the visible rect). */
 export function PatternBand({ className }: { className?: string }) {
   return (
-    <div className={className ? `pattern-band ${className}` : 'pattern-band'} aria-hidden="true">
+    <span className={className ? `pattern-band ${className}` : 'pattern-band'} aria-hidden="true">
       <svg preserveAspectRatio="none">
         {PATTERN_IDS.map((id) => (
           <rect key={id} className={`pat-${id}`} width="100%" height="100%" fill={`url(#p-${id})`} />
         ))}
       </svg>
-    </div>
+    </span>
   );
 }

@@ -35,7 +35,7 @@ export default function SettingsPanel({ onClose }: { onClose: () => void }) {
   }, [onClose]);
 
   return (
-    <div className="settings-panel" role="dialog" aria-label="Settings" tabIndex={-1} ref={ref}>
+    <div id="settings-panel" className="settings-panel" role="dialog" aria-label="Settings" tabIndex={-1} ref={ref}>
       <section>
         <h3>テーマ Theme</h3>
         <div className="chips">

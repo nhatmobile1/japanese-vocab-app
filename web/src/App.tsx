@@ -255,6 +255,7 @@ export default function App() {
             className="theme-toggle settings-toggle"
             aria-label="Settings"
             aria-expanded={settingsOpen}
+            aria-controls="settings-panel"
             title="Settings"
             onClick={() => setSettingsOpen((o) => !o)}
           >
@@ -298,7 +299,7 @@ export default function App() {
       {error && <p className="error">{error}</p>}
 
       {detail ? (
-        <WordDetail result={detail} onBack={() => setDetail(null)} />
+        <WordDetail key={detail.normTerm ?? detail.term} result={detail} onBack={() => setDetail(null)} />
       ) : searching ? (
         <ul className="results cascade" key={wave}>
           <WordRows rows={results} sel={sel} onSel={setSel} onOpen={setDetail} />
