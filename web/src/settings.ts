@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react';
 export const PALETTES = [
   { id: 'ruri', label: '瑠璃と月', dots: ['#f1f4f9', '#3d5aa5', '#a08428'] },
   { id: 'wakakusa', label: '若草', dots: ['#f4f6ec', '#47795b', '#a8842a'] },
-  { id: 'sakuranezu', label: '桜鼠', dots: ['#f9f3f3', '#c26879', '#6e8d64'] },
+  { id: 'sakuranezu', label: '桜鼠', dots: ['#f9f3f3', '#b74d61', '#6e8d64'] },
   { id: 'akanezora', label: '茜空', dots: ['#f7f2f5', '#b04452', '#6e68a8'] },
-  { id: 'mizuhanada', label: '水縹', dots: ['#eef6f4', '#2f7d78', '#c9808e'] },
-  { id: 'ponyo', label: 'ポニョ', dots: ['#faf1ea', '#dd5648', '#2e8388'] },
+  { id: 'mizuhanada', label: '水縹', dots: ['#eef6f4', '#2e7b76', '#c9808e'] },
+  { id: 'ponyo', label: 'ポニョ', dots: ['#faf1ea', '#ce3626', '#2e8388'] },
 ] as const;
 
 export const PATTERNS = [

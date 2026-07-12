@@ -11,7 +11,7 @@
   --bg: #f1f4f9;
   --surface: #fafbfe;
   --ink: #2b3149;
-  --muted: #7b83a1;
+  --muted: #666e8f;
   --line: #dbe1ee;
   --accent: #3d5aa5;
   --accent2: #a08428;
@@ -37,7 +37,7 @@
 }
 
 :root[data-palette='wakakusa'] {
-  --bg: #f4f6ec; --surface: #fbfcf6; --ink: #2e3a2e; --muted: #75816e;
+  --bg: #f4f6ec; --surface: #fbfcf6; --ink: #2e3a2e; --muted: #697362;
   --line: #dde3d0; --accent: #47795b; --accent2: #a8842a; --sel: #e7eed8;
   --accent-ink: #f4f6ec;
 }
@@ -48,8 +48,8 @@
 }
 
 :root[data-palette='sakuranezu'] {
-  --bg: #f9f3f3; --surface: #fefafa; --ink: #45383e; --muted: #97838c;
-  --line: #ecdcdf; --accent: #c26879; --accent2: #6e8d64; --sel: #f5e2e7;
+  --bg: #f9f3f3; --surface: #fefafa; --ink: #45383e; --muted: #7f6a73;
+  --line: #ecdcdf; --accent: #b74d61; --accent2: #6e8d64; --sel: #f5e2e7;
   --accent-ink: #f9f3f3;
 }
 :root[data-palette='sakuranezu'][data-theme='dark'] {
@@ -59,7 +59,7 @@
 }
 
 :root[data-palette='akanezora'] {
-  --bg: #f7f2f5; --surface: #fdfafb; --ink: #3b2f39; --muted: #92808d;
+  --bg: #f7f2f5; --surface: #fdfafb; --ink: #3b2f39; --muted: #7c6a77;
   --line: #e8dbe3; --accent: #b04452; --accent2: #6e68a8; --sel: #f2e2e9;
   --accent-ink: #f7f2f5;
 }
@@ -70,8 +70,8 @@
 }
 
 :root[data-palette='mizuhanada'] {
-  --bg: #eef6f4; --surface: #f9fcfb; --ink: #23413e; --muted: #6b8a85;
-  --line: #d7e6e2; --accent: #2f7d78; --accent2: #c9808e; --sel: #ddece8;
+  --bg: #eef6f4; --surface: #f9fcfb; --ink: #23413e; --muted: #5b7571;
+  --line: #d7e6e2; --accent: #2e7b76; --accent2: #c9808e; --sel: #ddece8;
   --accent-ink: #eef6f4;
 }
 :root[data-palette='mizuhanada'][data-theme='dark'] {
@@ -81,8 +81,8 @@
 }
 
 :root[data-palette='ponyo'] {
-  --bg: #faf1ea; --surface: #fefaf6; --ink: #33424d; --muted: #94827c;
-  --line: #f0ddd0; --accent: #dd5648; --accent2: #2e8388; --sel: #fae3da;
+  --bg: #faf1ea; --surface: #fefaf6; --ink: #33424d; --muted: #7c6b66;
+  --line: #f0ddd0; --accent: #ce3626; --accent2: #2e8388; --sel: #fae3da;
   --accent-ink: #faf1ea;
 }
 :root[data-palette='ponyo'][data-theme='dark'] {
