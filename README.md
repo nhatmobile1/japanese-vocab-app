@@ -14,11 +14,15 @@ The vault is watched — new lesson notes saved in Obsidian appear in search
 within a couple of seconds. The SQLite file (`data/vocab.db`) is a disposable
 cache, rebuilt from the vault on every start.
 
-## Search
+## Search & Browse
 
 - Kanji (還付), kana (かんぷ / カンプ), or English (refund) — one box.
 - `/` focuses search · ↑↓ select · Enter opens word detail · Esc goes back.
-- Tabs filter All / Vocab / Grammar / Sentences.
+- Tabs are views: **All** searches everything; **Vocab** / **Grammar** browse
+  the full sorted list when the box is empty (Recent · あいうえお · Most seen ·
+  Chapter) and filter as you type; **Sentences** is a newest-first timeline
+  grouped by month.
+- The ☾/☀ button toggles dark mode (light is the default; choice is saved).
 - `/api/unparsed` lists vault lines the parser couldn't classify.
 
 ## Config (env vars)
