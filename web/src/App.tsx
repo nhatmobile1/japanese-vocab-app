@@ -80,12 +80,17 @@ export default function App() {
   const [sel, setSel] = useState(0);
   const [detail, setDetail] = useState<SearchResultWord | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const kindRef = useRef(kind);
+  const sortRef = useRef(sort);
 
   const searching = q.trim().length > 0;
   const browsing = !searching && kind !== 'all';
   // Chapter sort only exists for vocab; fall back when the Grammar tab is active.
   const effectiveSort = kind === 'grammar' && sort === 'chapter' ? 'recent' : sort;
+  kindRef.current = kind;
+  sortRef.current = effectiveSort;
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -138,18 +143,27 @@ export default function App() {
   }, [browsing, kind, effectiveSort]);
 
   const loadMore = async () => {
+    if (loadingMore) return;
+    setLoadingMore(true);
+    const reqKind = kind;
+    const reqSort = effectiveSort;
+    const reqPage = page + 1;
     try {
-      if (kind === 'sentence') {
-        const data = await browseSentences(page + 1);
+      if (reqKind === 'sentence') {
+        const data = await browseSentences(reqPage);
+        if (kindRef.current !== reqKind) return;
         setSentences((s) => [...s, ...data.results]);
       } else {
-        const data = await browseWords(kind, effectiveSort, page + 1);
+        const data = await browseWords(reqKind, reqSort, reqPage);
+        if (kindRef.current !== reqKind || sortRef.current !== reqSort) return;
         setWords((w) => [...w, ...data.results]);
       }
-      setPage((p) => p + 1);
+      setPage(reqPage);
       setError(null);
     } catch {
       setError('Couldn’t load more — is the server running?');
+    } finally {
+      setLoadingMore(false);
     }
   };
 
@@ -250,8 +264,8 @@ export default function App() {
             </ul>
           )}
           {loaded < total && (
-            <button className="load-more" onClick={loadMore}>
-              Load more ({loaded} of {total})
+            <button className="load-more" onClick={loadMore} disabled={loadingMore}>
+              {loadingMore ? 'Loading…' : `Load more (${loaded} of ${total})`}
             </button>
           )}
         </>

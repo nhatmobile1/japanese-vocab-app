@@ -401,6 +401,11 @@ body {
   outline-offset: 2px;
 }
 
+.load-more:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .timeline section {
   margin-top: 0.5rem;
 }
