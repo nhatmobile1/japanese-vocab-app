@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { browseSentences, browseWords, searchApi } from './api';
 import type { Entry, SearchResultWord } from './types';
 import PatternDefs, { PatternBand } from './PatternDefs';
@@ -93,7 +93,7 @@ export default function App() {
   const indRef = useRef<HTMLElement>(null);
   const [wave, setWave] = useState(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const move = () => {
       const btn = tabsRef.current?.querySelector<HTMLButtonElement>('.tab.active');
       if (btn && indRef.current) {
@@ -102,6 +102,8 @@ export default function App() {
       }
     };
     move();
+    // Re-measure once the bundled Noto Sans JP finishes loading (tab widths shift).
+    document.fonts?.ready.then(move);
     window.addEventListener('resize', move);
     return () => window.removeEventListener('resize', move);
   }, [kind]);
