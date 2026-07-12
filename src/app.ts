@@ -79,6 +79,7 @@ export function createApp(db: Database.Database): Hono {
   app.get('/api/browse', (c) => {
     const kind = c.req.query('kind') ?? '';
     const sort = c.req.query('sort') || 'recent';
+    // Clamp so page * PAGE_SIZE stays a safe SQLite integer (bounded OFFSET).
     const page = Math.min(1_000_000, Math.max(0, Math.trunc(Number(c.req.query('page')) || 0)));
 
     if (kind !== 'vocab' && kind !== 'grammar' && kind !== 'sentence') {

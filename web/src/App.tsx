@@ -222,8 +222,10 @@ export default function App() {
         <nav className="filter-tabs">
           {KINDS.map((k) => (
             <button
+              type="button"
               key={k.key}
               className={kind === k.key ? 'tab active' : 'tab'}
+              aria-pressed={kind === k.key}
               onClick={() => setKind(k.key)}
             >
               {k.label}
@@ -234,8 +236,10 @@ export default function App() {
           <nav className="sort-tabs" aria-label="Sort order">
             {WORD_SORTS.filter((s) => !(kind === 'grammar' && s.key === 'chapter')).map((s) => (
               <button
+                type="button"
                 key={s.key}
                 className={effectiveSort === s.key ? 'tab active' : 'tab'}
+                aria-pressed={effectiveSort === s.key}
                 onClick={() => setSort(s.key)}
               >
                 {s.label}
@@ -264,7 +268,7 @@ export default function App() {
             </ul>
           )}
           {loaded < total && (
-            <button className="load-more" onClick={loadMore} disabled={loadingMore}>
+            <button type="button" className="load-more" onClick={loadMore} disabled={loadingMore}>
               {loadingMore ? 'Loading…' : `Load more (${loaded} of ${total})`}
             </button>
           )}

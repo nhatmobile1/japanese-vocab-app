@@ -5,7 +5,7 @@ import { serveStatic } from '@hono/node-server/serve-static';
 import { createApp } from './app.js';
 import { config } from './config.js';
 import { openDb } from './db.js';
-import { indexVault } from './indexer.js';
+import { indexVault, rebuildWords } from './indexer.js';
 import { startWatcher } from './watcher.js';
 
 fs.mkdirSync(path.dirname(config.dbPath), { recursive: true });
@@ -16,6 +16,7 @@ if (!vaultExists) {
   const existing = (db.prepare('SELECT COUNT(*) AS n FROM entries').get() as { n: number }).n;
   if (existing > 0) {
     console.warn(`[server] vault not found at ${config.vaultPath} — serving stale index (${existing} entries)`);
+    rebuildWords(db);
   } else {
     console.error(`[server] vault not found at ${config.vaultPath} and no existing index. Set VAULT_PATH.`);
     process.exit(1);
