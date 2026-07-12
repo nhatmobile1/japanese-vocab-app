@@ -4,7 +4,7 @@ import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 import type Database from 'better-sqlite3';
 import { openDb } from './db.js';
-import { indexVault, reindexFile, removeFile } from './indexer.js';
+import { indexVault, reindexFile, removeFile, routeFile } from './indexer.js';
 import { makeFixtureVault } from '../tests/fixture.js';
 
 let vault: string;
@@ -20,6 +20,18 @@ beforeAll(() => {
 afterAll(() => {
   db.close();
   fs.rmSync(vault, { recursive: true, force: true });
+});
+
+describe('routeFile', () => {
+  test('routes regardless of path casing (Obsidian vaults get renamed)', () => {
+    expect(routeFile('Lessons/2025/2025-07.md')).toBe('lesson');
+    expect(routeFile('lessons/2025/2025-07.md')).toBe('lesson');
+    expect(routeFile('Vocabulary/Genki/Genki-L08.md')).toBe('textbook');
+    expect(routeFile('vocabulary/genki/genki-l08.md')).toBe('textbook');
+    expect(routeFile('Grammar/Grammar-Quick-Reference.md')).toBe('grammar');
+    expect(routeFile('grammar/grammar-quick-reference.md')).toBe('grammar');
+    expect(routeFile('japanese-frequency.txt')).toBe(null);
+  });
 });
 
 describe('indexVault', () => {

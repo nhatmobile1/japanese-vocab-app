@@ -10,10 +10,11 @@ import type { ParsedEntry, ParseResult } from './parser/types.js';
 type Route = 'lesson' | 'textbook' | 'grammar';
 
 export function routeFile(relPath: string): Route | null {
-  const rel = relPath.split(path.sep).join('/');
-  if (/^Lessons\/\d{4}\/\d{4}-\d{2}\.md$/.test(rel)) return 'lesson';
-  if (rel.startsWith('Vocabulary/') && rel.endsWith('.md')) return 'textbook';
-  if (rel.startsWith('Grammar/') && rel.endsWith('.md')) return 'grammar';
+  // Case-insensitive: Obsidian vault folders get renamed (Lessons → lessons).
+  const rel = relPath.split(path.sep).join('/').toLowerCase();
+  if (/^lessons\/\d{4}\/\d{4}-\d{2}\.md$/.test(rel)) return 'lesson';
+  if (rel.startsWith('vocabulary/') && rel.endsWith('.md')) return 'textbook';
+  if (rel.startsWith('grammar/') && rel.endsWith('.md')) return 'grammar';
   return null;
 }
 
