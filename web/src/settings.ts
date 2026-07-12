@@ -4,9 +4,7 @@ import { useEffect, useState } from 'react';
 export const PALETTES = [
   { id: 'ruri', label: '瑠璃と月', dots: ['#f1f4f9', '#3d5aa5', '#7a7128'] },
   { id: 'wakakusa', label: '若草', dots: ['#f4f6ec', '#47795b', '#80702a'] },
-  { id: 'sakuranezu', label: '桜鼠', dots: ['#f9f3f3', '#b74d61', '#59784f'] },
-  { id: 'akanezora', label: '茜空', dots: ['#f7f2f5', '#b04452', '#6e68a8'] },
-  { id: 'mizuhanada', label: '水縹', dots: ['#eef6f4', '#2e7b76', '#a35a68'] },
+  { id: 'kikyo', label: '桔梗', dots: ['#f4f2f8', '#6257a8', '#776a26'] },
   { id: 'ponyo', label: 'ポニョ', dots: ['#faf1ea', '#ce3626', '#287a7c'] },
 ] as const;
 
