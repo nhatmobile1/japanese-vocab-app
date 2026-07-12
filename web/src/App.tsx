@@ -51,6 +51,7 @@ function WordRows({
         <li
           key={`${r.normTerm ?? r.term}-${i}`}
           className={i === sel ? 'result selected' : 'result'}
+          style={{ '--i': Math.min(i, 12) } as React.CSSProperties}
           onClick={() => onOpen(r)}
           onMouseEnter={() => onSel(i)}
         >
@@ -88,6 +89,22 @@ export default function App() {
   const settingsBtnRef = useRef<HTMLButtonElement>(null);
   const kindRef = useRef(kind);
   const sortRef = useRef(sort);
+  const tabsRef = useRef<HTMLElement>(null);
+  const indRef = useRef<HTMLElement>(null);
+  const [wave, setWave] = useState(0);
+
+  useEffect(() => {
+    const move = () => {
+      const btn = tabsRef.current?.querySelector<HTMLButtonElement>('.tab.active');
+      if (btn && indRef.current) {
+        indRef.current.style.left = `${btn.offsetLeft}px`;
+        indRef.current.style.width = `${btn.offsetWidth}px`;
+      }
+    };
+    move();
+    window.addEventListener('resize', move);
+    return () => window.removeEventListener('resize', move);
+  }, [kind]);
 
   const closeSettings = () => {
     setSettingsOpen(false);
@@ -113,6 +130,7 @@ export default function App() {
         setResults(await searchApi(q, kind, ctrl.signal));
         setSel(0);
         setError(null);
+        setWave((w) => w + 1);
       } catch (err) {
         if (!(err instanceof DOMException && err.name === 'AbortError')) {
           setError('Search failed — is the server running?');
@@ -139,6 +157,7 @@ export default function App() {
           setWords(data.results);
           setTotal(data.total);
         }
+        setWave((w) => w + 1);
         setPage(0);
         setSel(0);
         setError(null);
@@ -242,7 +261,7 @@ export default function App() {
           <ThemeToggle />
         </div>
         {settingsOpen && <SettingsPanel onClose={closeSettings} />}
-        <nav className="filter-tabs">
+        <nav className="filter-tabs" ref={tabsRef}>
           {KINDS.map((k) => (
             <button
               type="button"
@@ -254,6 +273,7 @@ export default function App() {
               {k.label}
             </button>
           ))}
+          <i className="tab-indicator" ref={indRef} aria-hidden="true" />
         </nav>
         {browsing && kind !== 'sentence' && (
           <nav className="sort-tabs" aria-label="Sort order">
@@ -278,7 +298,7 @@ export default function App() {
       {detail ? (
         <WordDetail result={detail} onBack={() => setDetail(null)} />
       ) : searching ? (
-        <ul className="results">
+        <ul className="results cascade" key={wave}>
           <WordRows rows={results} sel={sel} onSel={setSel} onOpen={setDetail} />
           {results.length === 0 && !error && <li className="empty">No matches for “{q}”</li>}
         </ul>
@@ -287,7 +307,7 @@ export default function App() {
           {kind === 'sentence' ? (
             <SentenceTimeline entries={sentences} />
           ) : (
-            <ul className="results">
+            <ul className="results cascade" key={wave}>
               <WordRows rows={words} sel={sel} onSel={setSel} onOpen={setDetail} />
             </ul>
           )}

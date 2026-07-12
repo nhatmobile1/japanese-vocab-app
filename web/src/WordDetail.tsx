@@ -43,7 +43,7 @@ export default function WordDetail({
       <button className="back" onClick={onBack}>
         ← results
       </button>
-      <h1 className="detail-term">
+      <h1 className="detail-term stamp">
         {result.term}
         {result.reading && result.reading !== result.term && (
           <span className="detail-reading">{result.reading}</span>
