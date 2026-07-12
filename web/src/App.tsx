@@ -3,6 +3,7 @@ import { browseSentences, browseWords, searchApi } from './api';
 import type { Entry, SearchResultWord } from './types';
 import PatternDefs, { PatternBand } from './PatternDefs';
 import SentenceTimeline from './SentenceTimeline';
+import SettingsPanel from './SettingsPanel';
 import ThemeToggle from './ThemeToggle';
 import WordDetail from './WordDetail';
 
@@ -82,9 +83,16 @@ export default function App() {
   const [detail, setDetail] = useState<SearchResultWord | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const settingsBtnRef = useRef<HTMLButtonElement>(null);
   const kindRef = useRef(kind);
   const sortRef = useRef(sort);
+
+  const closeSettings = () => {
+    setSettingsOpen(false);
+    settingsBtnRef.current?.focus();
+  };
 
   const searching = q.trim().length > 0;
   const browsing = !searching && kind !== 'all';
@@ -176,7 +184,8 @@ export default function App() {
         inputRef.current?.focus();
       }
       if (e.key === 'Escape') {
-        if (detail) setDetail(null);
+        if (settingsOpen) closeSettings();
+        else if (detail) setDetail(null);
         else {
           setQ('');
           inputRef.current?.focus();
@@ -185,7 +194,7 @@ export default function App() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [detail]);
+  }, [detail, settingsOpen]);
 
   const navRows = searching ? results : browsing && kind !== 'sentence' ? words : [];
 
@@ -219,8 +228,20 @@ export default function App() {
             className="search-input"
             spellCheck={false}
           />
+          <button
+            ref={settingsBtnRef}
+            type="button"
+            className="theme-toggle settings-toggle"
+            aria-label="Settings"
+            aria-expanded={settingsOpen}
+            title="Settings"
+            onClick={() => setSettingsOpen((o) => !o)}
+          >
+            ⚙
+          </button>
           <ThemeToggle />
         </div>
+        {settingsOpen && <SettingsPanel onClose={closeSettings} />}
         <nav className="filter-tabs">
           {KINDS.map((k) => (
             <button
