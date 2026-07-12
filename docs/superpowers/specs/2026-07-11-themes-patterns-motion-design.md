@@ -65,7 +65,7 @@ Exact behaviors and timings from the approved Motion Lab. All motion is `transfo
 3. **Hanko stamp** — the word-detail term block animates on mount: `scale(1.15) rotate(-1.5deg) → 1` with 60% keyframe overshoot, `220ms cubic-bezier(0.2, 1.2, 0.4, 1)`. **Toggleable in settings (`stamp`), on by default.**
 4. **Sliding tab indicator** — the kind-tab active underline becomes a single absolutely-positioned element that glides (`left`/`width`, `200ms cubic-bezier(0.34, 1.4, 0.64, 1)`) between tabs, measured from the active button (recomputed on tab click and window resize).
 5. **Results cascade** — rows of a *fresh* result set (new search response or browse page 0) rise in: `180ms ease-out`, 5px translateY + fade, 22ms stagger, capped at the first 12 rows (later rows appear instantly). Never applied to Load-more appends.
-6. **Petal on dark** — switching the theme toggle to dark spawns one petal element (`--accent2`-tinted in sakuranezu; the default rose #dc93a4 elsewhere) that drifts down-right with rotation over 900ms and removes itself. One-shot; light-switch has no petal.
+6. **Petal on dark** — switching the theme toggle to dark spawns one petal element (always sakura rose `#dc93a4`, in every palette) that drifts down-right with rotation over 900ms and removes itself. One-shot; light-switch has no petal.
 
 ## 4. Settings panel
 
