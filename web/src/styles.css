@@ -365,3 +365,59 @@ body {
 .mention .entry-raw {
   color: var(--muted);
 }
+
+/* --- Browse views ------------------------------------------------------ */
+
+.sort-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.4rem;
+}
+
+.sort-tabs .tab {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+}
+
+.load-more {
+  display: block;
+  margin: 1rem auto 0;
+  padding: 0.45rem 1.25rem;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.load-more:hover {
+  background: var(--selected-bg);
+  color: var(--selected-ink);
+}
+
+.load-more:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.timeline section {
+  margin-top: 0.5rem;
+}
+
+.timeline ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.month-header {
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.25rem;
+  margin: 1.25rem 0 0.5rem;
+  font-variant-numeric: tabular-nums;
+}

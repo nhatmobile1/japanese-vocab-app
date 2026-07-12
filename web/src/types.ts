@@ -37,3 +37,9 @@ export interface WordResponse {
   occurrences: Entry[];
   mentions: Entry[];
 }
+
+export interface BrowsePage<T> {
+  total: number;
+  page: number;
+  results: T[];
+}

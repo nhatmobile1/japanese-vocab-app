@@ -1,14 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
-import { searchApi } from './api';
-import type { SearchResultWord } from './types';
-import WordDetail from './WordDetail';
+import { browseSentences, browseWords, searchApi } from './api';
+import type { Entry, SearchResultWord } from './types';
+import SentenceTimeline from './SentenceTimeline';
 import ThemeToggle from './ThemeToggle';
+import WordDetail from './WordDetail';
 
 const KINDS = [
   { key: 'all', label: 'All' },
   { key: 'vocab', label: 'Vocab' },
   { key: 'grammar', label: 'Grammar' },
   { key: 'sentence', label: 'Sentences' },
+];
+
+const WORD_SORTS = [
+  { key: 'recent', label: 'Recent' },
+  { key: 'reading', label: 'あいうえお' },
+  { key: 'frequency', label: 'Most seen' },
+  { key: 'chapter', label: 'Chapter' },
 ];
 
 function sourceBadges(r: SearchResultWord): string[] {
@@ -24,19 +32,65 @@ function sourceBadges(r: SearchResultWord): string[] {
   return badges;
 }
 
+function WordRows({
+  rows,
+  sel,
+  onSel,
+  onOpen,
+}: {
+  rows: SearchResultWord[];
+  sel: number;
+  onSel: (i: number) => void;
+  onOpen: (r: SearchResultWord) => void;
+}) {
+  return (
+    <>
+      {rows.map((r, i) => (
+        <li
+          key={`${r.normTerm ?? r.term}-${i}`}
+          className={i === sel ? 'result selected' : 'result'}
+          onClick={() => onOpen(r)}
+          onMouseEnter={() => onSel(i)}
+        >
+          <span className="term">{r.term}</span>
+          {r.reading && r.reading !== r.term && <span className="reading">{r.reading}</span>}
+          <span className="gloss">{r.gloss ?? ''}</span>
+          <span className="badges">
+            {sourceBadges(r).map((b) => (
+              <span key={b} className="badge">
+                {b}
+              </span>
+            ))}
+          </span>
+        </li>
+      ))}
+    </>
+  );
+}
+
 export default function App() {
   const [q, setQ] = useState('');
   const [kind, setKind] = useState('all');
   const [results, setResults] = useState<SearchResultWord[]>([]);
+  const [sort, setSort] = useState('recent');
+  const [words, setWords] = useState<SearchResultWord[]>([]);
+  const [sentences, setSentences] = useState<Entry[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(0);
   const [sel, setSel] = useState(0);
   const [detail, setDetail] = useState<SearchResultWord | null>(null);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const searching = q.trim().length > 0;
+  const browsing = !searching && kind !== 'all';
+  // Chapter sort only exists for vocab; fall back when the Grammar tab is active.
+  const effectiveSort = kind === 'grammar' && sort === 'chapter' ? 'recent' : sort;
+
   useEffect(() => {
     const ctrl = new AbortController();
     const t = setTimeout(async () => {
-      if (!q.trim()) {
+      if (!searching) {
         setResults([]);
         setError(null);
         return;
@@ -55,7 +109,49 @@ export default function App() {
       ctrl.abort();
       clearTimeout(t);
     };
-  }, [q, kind]);
+  }, [q, kind, searching]);
+
+  useEffect(() => {
+    if (!browsing) return;
+    const ctrl = new AbortController();
+    (async () => {
+      try {
+        if (kind === 'sentence') {
+          const data = await browseSentences(0, ctrl.signal);
+          setSentences(data.results);
+          setTotal(data.total);
+        } else {
+          const data = await browseWords(kind, effectiveSort, 0, ctrl.signal);
+          setWords(data.results);
+          setTotal(data.total);
+        }
+        setPage(0);
+        setSel(0);
+        setError(null);
+      } catch (err) {
+        if (!(err instanceof DOMException && err.name === 'AbortError')) {
+          setError('Couldn’t load the list — is the server running?');
+        }
+      }
+    })();
+    return () => ctrl.abort();
+  }, [browsing, kind, effectiveSort]);
+
+  const loadMore = async () => {
+    try {
+      if (kind === 'sentence') {
+        const data = await browseSentences(page + 1);
+        setSentences((s) => [...s, ...data.results]);
+      } else {
+        const data = await browseWords(kind, effectiveSort, page + 1);
+        setWords((w) => [...w, ...data.results]);
+      }
+      setPage((p) => p + 1);
+      setError(null);
+    } catch {
+      setError('Couldn’t load more — is the server running?');
+    }
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -76,18 +172,22 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, [detail]);
 
+  const navRows = searching ? results : browsing && kind !== 'sentence' ? words : [];
+
   const onInputKey = (e: React.KeyboardEvent) => {
     if (e.nativeEvent.isComposing || e.keyCode === 229) return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setSel((s) => Math.min(s + 1, results.length - 1));
+      setSel((s) => Math.min(s + 1, navRows.length - 1));
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setSel((s) => Math.max(s - 1, 0));
-    } else if (e.key === 'Enter' && results[sel]) {
-      setDetail(results[sel]);
+    } else if (e.key === 'Enter' && navRows[sel]) {
+      setDetail(navRows[sel]);
     }
   };
+
+  const loaded = kind === 'sentence' ? sentences.length : words.length;
 
   return (
     <div className="app">
@@ -116,37 +216,47 @@ export default function App() {
             </button>
           ))}
         </nav>
+        {browsing && kind !== 'sentence' && (
+          <nav className="sort-tabs" aria-label="Sort order">
+            {WORD_SORTS.filter((s) => !(kind === 'grammar' && s.key === 'chapter')).map((s) => (
+              <button
+                key={s.key}
+                className={effectiveSort === s.key ? 'tab active' : 'tab'}
+                onClick={() => setSort(s.key)}
+              >
+                {s.label}
+              </button>
+            ))}
+          </nav>
+        )}
       </header>
 
       {error && <p className="error">{error}</p>}
 
       {detail ? (
         <WordDetail result={detail} onBack={() => setDetail(null)} />
-      ) : (
+      ) : searching ? (
         <ul className="results">
-          {results.map((r, i) => (
-            <li
-              key={`${r.normTerm ?? r.term}-${i}`}
-              className={i === sel ? 'result selected' : 'result'}
-              onClick={() => setDetail(r)}
-              onMouseEnter={() => setSel(i)}
-            >
-              <span className="term">{r.term}</span>
-              {r.reading && r.reading !== r.term && <span className="reading">{r.reading}</span>}
-              <span className="gloss">{r.gloss ?? ''}</span>
-              <span className="badges">
-                {sourceBadges(r).map((b) => (
-                  <span key={b} className="badge">
-                    {b}
-                  </span>
-                ))}
-              </span>
-            </li>
-          ))}
-          {q.trim() && results.length === 0 && !error && (
-            <li className="empty">No matches for “{q}”</li>
-          )}
+          <WordRows rows={results} sel={sel} onSel={setSel} onOpen={setDetail} />
+          {results.length === 0 && !error && <li className="empty">No matches for “{q}”</li>}
         </ul>
+      ) : browsing ? (
+        <>
+          {kind === 'sentence' ? (
+            <SentenceTimeline entries={sentences} />
+          ) : (
+            <ul className="results">
+              <WordRows rows={words} sel={sel} onSel={setSel} onOpen={setDetail} />
+            </ul>
+          )}
+          {loaded < total && (
+            <button className="load-more" onClick={loadMore}>
+              Load more ({loaded} of {total})
+            </button>
+          )}
+        </>
+      ) : (
+        <ul className="results" />
       )}
     </div>
   );
