@@ -19,15 +19,15 @@ const WORD_SORTS = [
   { key: 'chapter', label: 'Chapter' },
 ];
 
-function sourceBadges(r: SearchResultWord): string[] {
+function sourceBadges(r: SearchResultWord): { text: string; tb: boolean }[] {
   const badges = r.sources
     .filter((s) => s.sourceType !== 'lesson')
-    .map((s) => s.sourceRef);
+    .map((s) => ({ text: s.sourceRef, tb: true }));
   if (r.lessonCount === 1) {
     const d = r.sources.find((s) => s.sourceType === 'lesson');
-    if (d) badges.push(d.sourceRef);
+    if (d) badges.push({ text: d.sourceRef, tb: false });
   } else if (r.lessonCount > 1) {
-    badges.push(`×${r.lessonCount} lessons`);
+    badges.push({ text: `×${r.lessonCount} lessons`, tb: false });
   }
   return badges;
 }
@@ -57,8 +57,8 @@ function WordRows({
           <span className="gloss">{r.gloss ?? ''}</span>
           <span className="badges">
             {sourceBadges(r).map((b) => (
-              <span key={b} className="badge">
-                {b}
+              <span key={b.text} className={b.tb ? 'badge tb' : 'badge'}>
+                {b.text}
               </span>
             ))}
           </span>

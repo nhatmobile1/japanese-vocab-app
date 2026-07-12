@@ -6,7 +6,20 @@
     <title>語彙 — Vocab Lookup</title>
     <script>
       try {
-        if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark';
+        var d = document.documentElement.dataset;
+        if (localStorage.getItem('theme') === 'dark') d.theme = 'dark';
+        // Keep these whitelists in sync with web/src/settings.ts.
+        var pal = localStorage.getItem('palette');
+        d.palette =
+          ['ruri', 'wakakusa', 'sakuranezu', 'akanezora', 'mizuhanada', 'ponyo'].indexOf(pal) >= 0
+            ? pal
+            : 'ruri';
+        var pat = localStorage.getItem('pattern');
+        d.pattern =
+          ['seigaiha', 'shippo', 'ichimatsu', 'uroko', 'yabane', 'kasumi', 'none'].indexOf(pat) >= 0
+            ? pat
+            : 'seigaiha';
+        if (localStorage.getItem('stamp') === 'off') d.stamp = 'off';
       } catch (e) {}
     </script>
   </head>

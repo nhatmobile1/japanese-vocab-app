@@ -1,30 +1,27 @@
 /*
-  Design direction: Swiss/editorial precision meets a Japanese hanko-seal accent.
-  This is a glance-at-a-glance instrument used mid-lesson, next to a video call —
-  not a "cozy" reading app. Choices favor sharp contrast, hairline structure, and
-  instant scanability over softness:
-    - Pure ink/white (dark: near-black) instead of cream/off-white backgrounds.
-    - A single saturated vermillion (朱色 / shu-iro, the hanko-stamp red) as the
-      one accent color — high-chroma, not a muted terracotta/coral.
-    - Zero-radius, hairline-divided rows instead of rounded "cards" with shadows.
-    - Selection is a solid inverted block (like a stamped/highlighted line), not
-      a tinted rounded card — reads instantly at a glance.
-    - Noto Sans JP everywhere (bundled locally, no network fonts) — the user
-      found Mincho hard to read; light theme is the default, dark is opt-in.
-    - Tabular/monospace for badges & dates, reinforcing an "instrument panel" feel.
+  Design direction: Japanese paper & Ghibli skies. Six palettes (伝統色 +
+  film-derived), selectable at runtime via data-palette on <html>; light is
+  default, dark is data-theme='dark'. Selection is a subtle tinted wash
+  (--sel), never an inverted block. --accent2 marks textbook badges.
+  Structure stays the Phase-1 instrument: zero-radius, hairline rows,
+  Noto Sans JP, tabular badges.
 */
 
 :root {
-  --bg: #ffffff;
-  --ink: #101114;
-  --muted: #5b5f66;
-  --accent: #c31f0e;
-  --accent-ink: #ffffff;
-  --line: #d8dade;
-  --line-strong: #101114;
-  --selected-bg: #101114;
-  --selected-ink: #ffffff;
-  --focus: #c31f0e;
+  --bg: #f1f4f9;
+  --surface: #fafbfe;
+  --ink: #2b3149;
+  --muted: #7b83a1;
+  --line: #dbe1ee;
+  --accent: #3d5aa5;
+  --accent2: #a08428;
+  --sel: #e3e9f6;
+  --accent-ink: #f1f4f9;
+
+  --line-strong: var(--ink);
+  --focus: var(--accent);
+  --selected-bg: var(--sel);
+  --selected-ink: var(--ink);
 
   --font-ui: 'Noto Sans JP', 'Hiragino Sans', -apple-system, 'Segoe UI', sans-serif;
   --font-display: var(--font-ui);
@@ -33,17 +30,65 @@
   font-size: 16px;
 }
 
-:root[data-theme='dark'] {
-  --bg: #101114;
-  --ink: #e8e8e6;
-  --muted: #9a9da3;
-  --accent: #ff6a4d;
-  --accent-ink: #101114;
-  --line: #2a2c30;
-  --line-strong: #e8e8e6;
-  --selected-bg: #26292e;
-  --selected-ink: #ffffff;
-  --focus: #ff6a4d;
+:root[data-palette='ruri'][data-theme='dark'] {
+  --bg: #131828; --surface: #191f33; --ink: #dde3f2; --muted: #8b93b4;
+  --line: #2a3149; --accent: #93acea; --accent2: #d9b44a; --sel: #212a45;
+  --accent-ink: #131828;
+}
+
+:root[data-palette='wakakusa'] {
+  --bg: #f4f6ec; --surface: #fbfcf6; --ink: #2e3a2e; --muted: #75816e;
+  --line: #dde3d0; --accent: #47795b; --accent2: #a8842a; --sel: #e7eed8;
+  --accent-ink: #f4f6ec;
+}
+:root[data-palette='wakakusa'][data-theme='dark'] {
+  --bg: #161c16; --surface: #1c231c; --ink: #e2e8da; --muted: #93a08c;
+  --line: #2b342b; --accent: #82b995; --accent2: #d9b04a; --sel: #24301f;
+  --accent-ink: #161c16;
+}
+
+:root[data-palette='sakuranezu'] {
+  --bg: #f9f3f3; --surface: #fefafa; --ink: #45383e; --muted: #97838c;
+  --line: #ecdcdf; --accent: #c26879; --accent2: #6e8d64; --sel: #f5e2e7;
+  --accent-ink: #f9f3f3;
+}
+:root[data-palette='sakuranezu'][data-theme='dark'] {
+  --bg: #201a1d; --surface: #271f23; --ink: #ecdfe3; --muted: #a68f99;
+  --line: #3a2f34; --accent: #dc93a4; --accent2: #93b489; --sel: #33262c;
+  --accent-ink: #201a1d;
+}
+
+:root[data-palette='akanezora'] {
+  --bg: #f7f2f5; --surface: #fdfafb; --ink: #3b2f39; --muted: #92808d;
+  --line: #e8dbe3; --accent: #b04452; --accent2: #6e68a8; --sel: #f2e2e9;
+  --accent-ink: #f7f2f5;
+}
+:root[data-palette='akanezora'][data-theme='dark'] {
+  --bg: #1e1720; --surface: #251c28; --ink: #ecdfe8; --muted: #a48fa1;
+  --line: #372c3b; --accent: #dd8390; --accent2: #9d97d6; --sel: #342434;
+  --accent-ink: #1e1720;
+}
+
+:root[data-palette='mizuhanada'] {
+  --bg: #eef6f4; --surface: #f9fcfb; --ink: #23413e; --muted: #6b8a85;
+  --line: #d7e6e2; --accent: #2f7d78; --accent2: #c9808e; --sel: #ddece8;
+  --accent-ink: #eef6f4;
+}
+:root[data-palette='mizuhanada'][data-theme='dark'] {
+  --bg: #101f1d; --surface: #162624; --ink: #dcebe7; --muted: #86a49e;
+  --line: #24403c; --accent: #6fc4ba; --accent2: #e2a7b3; --sel: #1c3330;
+  --accent-ink: #101f1d;
+}
+
+:root[data-palette='ponyo'] {
+  --bg: #faf1ea; --surface: #fefaf6; --ink: #33424d; --muted: #94827c;
+  --line: #f0ddd0; --accent: #dd5648; --accent2: #2e8388; --sel: #fae3da;
+  --accent-ink: #faf1ea;
+}
+:root[data-palette='ponyo'][data-theme='dark'] {
+  --bg: #14232a; --surface: #1a2c34; --ink: #ecdfd4; --muted: #93a4a2;
+  --line: #2a4048; --accent: #f08a7a; --accent2: #6fc0bd; --sel: #263c42;
+  --accent-ink: #14232a;
 }
 
 * {
@@ -193,9 +238,12 @@ body {
 }
 
 .result.selected {
-  background: var(--selected-bg);
-  color: var(--selected-ink);
-  border-bottom-color: var(--selected-bg);
+  background: var(--sel);
+  border-bottom-color: var(--sel);
+}
+
+.result.selected .term {
+  color: var(--accent);
 }
 
 .term {
@@ -211,22 +259,12 @@ body {
   font-size: 0.92rem;
 }
 
-.result.selected .reading {
-  color: inherit;
-  opacity: 0.75;
-}
-
 .gloss {
   color: var(--muted);
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.result.selected .gloss {
-  color: inherit;
-  opacity: 0.8;
 }
 
 .badges {
@@ -245,10 +283,9 @@ body {
   white-space: nowrap;
 }
 
-.result.selected .badge {
-  border-color: var(--selected-ink);
-  color: var(--selected-ink);
-  opacity: 0.85;
+.badge.tb {
+  color: var(--accent2);
+  border-color: var(--accent2);
 }
 
 .empty,

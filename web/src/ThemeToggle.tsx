@@ -1,27 +1,13 @@
-import { useState } from 'react';
+import { getTheme, setTheme, useSettingValue } from './settings';
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState(
-    document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
-  );
-
-  const toggle = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    if (next === 'dark') document.documentElement.dataset.theme = 'dark';
-    else delete document.documentElement.dataset.theme;
-    try {
-      localStorage.setItem('theme', next);
-    } catch {
-      /* private mode etc. — theme still applies for this session */
-    }
-    setTheme(next);
-  };
+  const theme = useSettingValue(getTheme);
 
   return (
     <button
       type="button"
       className="theme-toggle"
-      onClick={toggle}
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
       title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
     >

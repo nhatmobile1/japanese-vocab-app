@@ -57,7 +57,7 @@ export default function WordDetail({
           <ul>
             {textbook.map((o) => (
               <li key={o.id} className="occurrence">
-                <span className="badge">{o.source_ref}</span>
+                <span className="badge tb">{o.source_ref}</span>
                 {o.section && <span className="section">{o.section}</span>}
                 <EntryLine e={o} />
               </li>
