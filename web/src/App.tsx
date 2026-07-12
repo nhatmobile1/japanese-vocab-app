@@ -1,10 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { browseSentences, browseWords, searchApi } from './api';
 import type { Entry, SearchResultWord } from './types';
+import AppHeader from './AppHeader';
 import PatternDefs, { PatternBand } from './PatternDefs';
 import SentenceTimeline from './SentenceTimeline';
-import SettingsPanel from './SettingsPanel';
-import ThemeToggle from './ThemeToggle';
 import WordDetail from './WordDetail';
 
 const KINDS = [
@@ -237,6 +236,12 @@ export default function App() {
   return (
     <div className="app">
       <PatternDefs />
+      <AppHeader
+        settingsOpen={settingsOpen}
+        onSettingsToggle={() => setSettingsOpen((o) => !o)}
+        onSettingsClose={closeSettings}
+        settingsBtnRef={settingsBtnRef}
+      />
       <header className="search-header">
         <div className="header-row">
           <input
@@ -249,21 +254,20 @@ export default function App() {
             className="search-input"
             spellCheck={false}
           />
-          <button
-            ref={settingsBtnRef}
-            type="button"
-            className="theme-toggle settings-toggle"
-            aria-label="Settings"
-            aria-expanded={settingsOpen}
-            aria-controls="settings-panel"
-            title="Settings"
-            onClick={() => setSettingsOpen((o) => !o)}
-          >
-            ⚙
-          </button>
-          <ThemeToggle />
+          {searching && (
+            <button
+              type="button"
+              className="search-clear"
+              aria-label="Clear search"
+              onClick={() => {
+                setQ('');
+                inputRef.current?.focus();
+              }}
+            >
+              ✕
+            </button>
+          )}
         </div>
-        {settingsOpen && <SettingsPanel onClose={closeSettings} />}
         <nav className="filter-tabs" ref={tabsRef}>
           {KINDS.map((k) => (
             <button
