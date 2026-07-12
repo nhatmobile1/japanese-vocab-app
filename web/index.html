@@ -16,10 +16,9 @@
             : 'ruri';
         var pat = localStorage.getItem('pattern');
         d.pattern =
-          ['seigaiha', 'shippo', 'ichimatsu', 'uroko', 'yabane', 'kasumi', 'none'].indexOf(pat) >= 0
+          ['seigaiha', 'shippo', 'yabane', 'none'].indexOf(pat) >= 0
             ? pat
             : 'seigaiha';
-        if (localStorage.getItem('stamp') === 'off') d.stamp = 'off';
       } catch (e) {}
     </script>
   </head>

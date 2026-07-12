@@ -4,11 +4,9 @@ import {
   PATTERNS,
   getPalette,
   getPattern,
-  getStamp,
   getTheme,
   setPalette,
   setPattern,
-  setStamp,
   setTheme,
   useSettingValue,
 } from './settings';
@@ -17,7 +15,6 @@ export default function SettingsPanel({ onClose }: { onClose: () => void }) {
   const palette = useSettingValue(getPalette);
   const theme = useSettingValue(getTheme);
   const pattern = useSettingValue(getPattern);
-  const stamp = useSettingValue(getStamp);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -92,14 +89,6 @@ export default function SettingsPanel({ onClose }: { onClose: () => void }) {
         </div>
       </section>
 
-      <section>
-        <h3>動き Motion</h3>
-        <div className="chips">
-          <button type="button" className="chip" aria-pressed={stamp} onClick={() => setStamp(!stamp)}>
-            判子 stamp on word detail {stamp ? 'on' : 'off'}
-          </button>
-        </div>
-      </section>
     </div>
   );
 }

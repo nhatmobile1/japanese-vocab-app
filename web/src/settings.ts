@@ -11,10 +11,7 @@ export const PALETTES = [
 export const PATTERNS = [
   { id: 'seigaiha', label: '青海波' },
   { id: 'shippo', label: '七宝' },
-  { id: 'ichimatsu', label: '市松' },
-  { id: 'uroko', label: '鱗' },
   { id: 'yabane', label: '矢羽根' },
-  { id: 'kasumi', label: '霞' },
   { id: 'none', label: 'なし' },
 ] as const;
 
@@ -62,16 +59,6 @@ export function getPattern(): PatternId {
 export function setPattern(id: PatternId): void {
   root().pattern = id;
   save('pattern', id);
-  emit();
-}
-
-export function getStamp(): boolean {
-  return root().stamp !== 'off';
-}
-export function setStamp(on: boolean): void {
-  if (on) delete root().stamp;
-  else root().stamp = 'off';
-  save('stamp', on ? 'on' : 'off');
   emit();
 }
 
