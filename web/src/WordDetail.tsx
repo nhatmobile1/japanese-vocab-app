@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { wordApi } from './api';
 import type { Entry, SearchResultWord, WordResponse } from './types';
+import { PatternBand } from './PatternDefs';
 
 function EntryLine({ e }: { e: Entry }) {
   return (
@@ -48,6 +49,7 @@ export default function WordDetail({
           <span className="detail-reading">{result.reading}</span>
         )}
       </h1>
+      <PatternBand className="detail-band" />
       {result.gloss && <p className="detail-gloss">{result.gloss}</p>}
       {error && <p className="error">{error}</p>}
 

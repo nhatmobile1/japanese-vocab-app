@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { browseSentences, browseWords, searchApi } from './api';
 import type { Entry, SearchResultWord } from './types';
+import PatternDefs, { PatternBand } from './PatternDefs';
 import SentenceTimeline from './SentenceTimeline';
 import ThemeToggle from './ThemeToggle';
 import WordDetail from './WordDetail';
@@ -205,6 +206,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <PatternDefs />
       <header className="search-header">
         <div className="header-row">
           <input
@@ -213,7 +215,7 @@ export default function App() {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={onInputKey}
-            placeholder="還付 · かんぷ · refund …"
+            placeholder="上手・じょうず・skilled"
             className="search-input"
             spellCheck={false}
           />
@@ -247,6 +249,7 @@ export default function App() {
             ))}
           </nav>
         )}
+        <PatternBand />
       </header>
 
       {error && <p className="error">{error}</p>}

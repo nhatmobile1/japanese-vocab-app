@@ -1,4 +1,5 @@
 import type { Entry } from './types';
+import { PatternBand } from './PatternDefs';
 
 function byMonth(entries: Entry[]): { month: string; items: Entry[] }[] {
   const groups: { month: string; items: Entry[] }[] = [];
@@ -17,7 +18,10 @@ export default function SentenceTimeline({ entries }: { entries: Entry[] }) {
     <div className="timeline">
       {byMonth(entries).map((g) => (
         <section key={g.month}>
-          <h2 className="month-header">{g.month}</h2>
+          <h2 className="month-header">
+            {g.month}
+            <PatternBand className="month-band" />
+          </h2>
           <ul>
             {g.items.map((e) => (
               <li key={e.id} className="occurrence">
