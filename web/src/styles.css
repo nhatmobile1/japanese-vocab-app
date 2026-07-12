@@ -95,8 +95,7 @@ body {
   .theme-toggle,
   .load-more,
   .back,
-  .chip,
-  .search-clear {
+  .chip {
     transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
@@ -104,8 +103,7 @@ body {
   .theme-toggle:active,
   .load-more:active:not(:disabled),
   .back:active,
-  .chip:active,
-  .search-clear:active {
+  .chip:active {
     transform: scale(0.98) translateY(1px);
     transition-duration: 90ms;
     transition-timing-function: ease-out;
@@ -152,6 +150,7 @@ body {
 }
 
 .header-row {
+  position: relative;
   display: flex;
   gap: 0.5rem;
   align-items: stretch;
@@ -159,6 +158,7 @@ body {
 
 .header-row .search-input {
   flex: 1;
+  padding-right: 2.2rem;
 }
 
 .theme-toggle {
@@ -368,7 +368,7 @@ body {
   margin-top: 0.35rem;
 }
 
-.word-detail h2 {
+.word-detail section h2 {
   font-family: var(--font-ui);
   font-size: 0.75rem;
   font-weight: 700;
@@ -532,8 +532,6 @@ body {
 
 /* --- Settings panel ------------------------------------------------------ */
 
-/* .search-header (z-index: 20, sticky) anchors .settings-panel */
-
 .settings-panel {
   position: absolute;
   top: calc(100% + 2px);
@@ -686,7 +684,6 @@ body {
   .load-more,
   .back,
   .chip,
-  .search-clear,
   .tab-indicator {
     transition: none !important;
   }
@@ -732,11 +729,15 @@ body {
 }
 
 .search-clear {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
   border: none;
   background: transparent;
   color: var(--muted);
   font-size: 1rem;
-  padding: 0 0.6rem;
+  padding: 0.3rem 0.6rem;
   cursor: pointer;
   font-family: var(--font-ui);
 }

@@ -43,12 +43,12 @@ export default function WordDetail({
       <button className="back" onClick={onBack}>
         ← results
       </button>
-      <h1 className="detail-term stamp">
+      <h2 className="detail-term stamp">
         {result.term}
         {result.reading && result.reading !== result.term && (
           <span className="detail-reading">{result.reading}</span>
         )}
-      </h1>
+      </h2>
       <PatternBand className="detail-band" />
       {result.gloss && <p className="detail-gloss">{result.gloss}</p>}
       {error && <p className="error">{error}</p>}

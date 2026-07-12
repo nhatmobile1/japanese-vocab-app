@@ -88,7 +88,6 @@ export default function SettingsPanel({ onClose }: { onClose: () => void }) {
           ))}
         </div>
       </section>
-
     </div>
   );
 }
