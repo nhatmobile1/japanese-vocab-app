@@ -167,7 +167,7 @@ export default function App() {
         setError(null);
       } catch (err) {
         if (!(err instanceof DOMException && err.name === 'AbortError')) {
-          setError("Couldn't load the list — is the server running?");
+          setError('Couldn’t load the list — is the server running?');
         }
       }
     })();
@@ -193,7 +193,7 @@ export default function App() {
       setPage(reqPage);
       setError(null);
     } catch {
-      setError("Couldn't load more — is the server running?");
+      setError('Couldn’t load more — is the server running?');
     } finally {
       setLoadingMore(false);
     }
@@ -328,7 +328,7 @@ export default function App() {
             setHover(null);
             setDetail(r);
           }} />
-          {results.length === 0 && !error && <li className="empty">No matches for &#8220;{q}&#8221;</li>}
+          {results.length === 0 && !error && <li className="empty">No matches for “{q}”</li>}
         </ul>
       ) : browsing ? (
         <>
