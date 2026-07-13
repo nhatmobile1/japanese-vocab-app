@@ -167,7 +167,7 @@ export default function App() {
         setError(null);
       } catch (err) {
         if (!(err instanceof DOMException && err.name === 'AbortError')) {
-          setError('Couldn\'t load the list — is the server running?');
+          setError("Couldn't load the list — is the server running?");
         }
       }
     })();
@@ -193,7 +193,7 @@ export default function App() {
       setPage(reqPage);
       setError(null);
     } catch {
-      setError('Couldn\'t load more — is the server running?');
+      setError("Couldn't load more — is the server running?");
     } finally {
       setLoadingMore(false);
     }
@@ -324,8 +324,11 @@ export default function App() {
         <WordDetail key={detail.normTerm ?? detail.term} result={detail} onBack={() => setDetail(null)} />
       ) : searching ? (
         <ul className="results cascade" key={wave} onMouseLeave={() => setHover(null)}>
-          <WordRows rows={results} highlight={highlight} onHover={setHover} onOpen={setDetail} />
-          {results.length === 0 && !error && <li className="empty">No matches for "{q}"</li>}
+          <WordRows rows={results} highlight={highlight} onHover={setHover} onOpen={(r) => {
+            setHover(null);
+            setDetail(r);
+          }} />
+          {results.length === 0 && !error && <li className="empty">No matches for &#8220;{q}&#8221;</li>}
         </ul>
       ) : browsing ? (
         <>
@@ -333,12 +336,15 @@ export default function App() {
             <SentenceTimeline entries={sentences} />
           ) : (
             <ul className="results cascade" key={wave} onMouseLeave={() => setHover(null)}>
-              <WordRows rows={words} highlight={highlight} onHover={setHover} onOpen={setDetail} />
+              <WordRows rows={words} highlight={highlight} onHover={setHover} onOpen={(r) => {
+                setHover(null);
+                setDetail(r);
+              }} />
             </ul>
           )}
           {loaded < total && (
             <button type="button" className="load-more" onClick={loadMore} disabled={loadingMore}>
-              {loadingMore ? 'Loading...' : `Load more (${loaded} of ${total})`}
+              {loadingMore ? 'Loading…' : `Load more (${loaded} of ${total})`}
             </button>
           )}
         </>
