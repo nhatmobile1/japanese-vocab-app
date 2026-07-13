@@ -6,6 +6,7 @@ export const PALETTES = [
   { id: 'wakakusa', label: '若草', dots: ['#f4f6ec', '#47795b', '#80702a'] },
   { id: 'kikyo', label: '桔梗', dots: ['#f4f2f8', '#6257a8', '#776a26'] },
   { id: 'ponyo', label: 'ポニョ', dots: ['#faf1ea', '#ce3626', '#287a7c'] },
+  { id: 'jisho', label: '辞書', dots: ['#ffffff', '#c73e3a', '#3d5a80'] },
 ] as const;
 
 export const PATTERNS = [

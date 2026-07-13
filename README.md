@@ -22,7 +22,7 @@ cache, rebuilt from the vault on every start.
   the full sorted list when the box is empty (Recent · あいうえお · Most seen ·
   Chapter) and filter as you type; **Sentences** is a newest-first timeline
   grouped by month.
-- ⚙ opens Settings: four color themes (瑠璃と月 · 若草 · 桔梗 · ポニョ),
+- ⚙ opens Settings: five color themes (瑠璃と月 · 若草 · 桔梗 · ポニョ · 辞書),
   light/dark, and a traditional pattern for the header bands (青海波 · 七宝 ·
   矢羽根 · none). ☾/☀ is the quick theme switch. Everything persists locally.
 - `/api/unparsed` lists vault lines the parser couldn't classify.

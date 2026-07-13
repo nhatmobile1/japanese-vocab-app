@@ -69,6 +69,17 @@
   --accent-ink: #14232a;
 }
 
+:root[data-palette='jisho'] {
+  --bg: #ffffff; --surface: #f4f5f6; --ink: #1a1d21; --muted: #5f656b;
+  --line: #d9dcdf; --accent: #c73e3a; --accent2: #3d5a80; --sel: #f8e7e6;
+  --accent-ink: #ffffff;
+}
+:root[data-palette='jisho'][data-theme='dark'] {
+  --bg: #16181b; --surface: #1d2024; --ink: #e8eaec; --muted: #9aa0a6;
+  --line: #33373c; --accent: #e06d66; --accent2: #7e9cc4; --sel: #35272a;
+  --accent-ink: #16181b;
+}
+
 * {
   box-sizing: border-box;
 }
