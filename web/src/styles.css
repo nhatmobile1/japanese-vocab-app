@@ -93,7 +93,7 @@ body {
   }
 
   .tab,
-  .theme-toggle,
+  .icon-btn,
   .load-more,
   .back,
   .chip {
@@ -101,13 +101,29 @@ body {
   }
 
   .tab:active,
-  .theme-toggle:active,
+  .icon-btn:active,
   .load-more:active:not(:disabled),
   .back:active,
   .chip:active {
     transform: scale(0.98) translateY(1px);
     transition-duration: 90ms;
     transition-timing-function: ease-out;
+  }
+
+  .icon-btn::before {
+    transition:
+      transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      opacity 140ms ease;
+  }
+
+  .icon-btn .glyph {
+    transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .moon-btn .star {
+    transition:
+      opacity 160ms ease 60ms,
+      transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1) 60ms;
   }
 
   .header-row::before {
@@ -196,24 +212,73 @@ body {
   color: var(--accent);
 }
 
-.theme-toggle {
-  border: 1px solid var(--line);
+.icon-btn {
+  position: relative;
+  isolation: isolate;
+  width: 2.4rem;
+  height: 2.4rem;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
   background: transparent;
   color: var(--muted);
-  font-size: 1rem;
-  padding: 0 0.75rem;
+  font-size: 1.05rem;
+  padding: 0;
   cursor: pointer;
   font-family: var(--font-ui);
 }
 
-.theme-toggle:hover {
-  color: var(--ink);
-  border-color: var(--line-strong);
+.icon-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  z-index: -1;
+  background: var(--sel);
+  transform: scale(0.4);
+  opacity: 0;
 }
 
-.theme-toggle:focus-visible {
+.icon-btn:hover {
+  color: var(--ink);
+}
+
+.icon-btn:hover::before {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.icon-btn:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 2px;
+}
+
+.icon-btn .glyph {
+  display: inline-block;
+}
+
+.settings-toggle:hover .glyph {
+  transform: rotate(60deg);
+}
+
+.moon-btn:hover .glyph {
+  transform: rotate(-14deg);
+}
+
+.moon-btn .star {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.45rem;
+  font-size: 0.5rem;
+  color: var(--accent2);
+  opacity: 0;
+  transform: scale(0.3);
+}
+
+.moon-btn:hover .star {
+  opacity: 1;
+  transform: scale(1);
 }
 
 .filter-tabs {
@@ -708,16 +773,15 @@ body {
   100% { opacity: 0; transform: translate(calc(-50% + 26px), 52px) rotate(140deg); }
 }
 
-.theme-toggle {
-  position: relative;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .result::before,
   .header-row,
   .header-row::before,
   .tab,
-  .theme-toggle,
+  .icon-btn,
+  .icon-btn::before,
+  .icon-btn .glyph,
+  .moon-btn .star,
   .load-more,
   .back,
   .chip,

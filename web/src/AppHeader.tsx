@@ -44,14 +44,14 @@ export default function AppHeader({
         <button
           ref={settingsBtnRef}
           type="button"
-          className="theme-toggle settings-toggle"
+          className="icon-btn settings-toggle"
           aria-label="Settings"
           aria-expanded={settingsOpen}
           aria-controls="settings-panel"
           title="Settings"
           onClick={onSettingsToggle}
         >
-          ⚙
+          <span className="glyph">⚙</span>
         </button>
         <ThemeToggle />
       </div>

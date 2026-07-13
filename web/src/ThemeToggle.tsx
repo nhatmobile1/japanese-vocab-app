@@ -21,12 +21,15 @@ export default function ThemeToggle() {
   return (
     <button
       type="button"
-      className="theme-toggle"
+      className="icon-btn moon-btn"
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
       title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
     >
-      {theme === 'dark' ? '☀' : '☾'}
+      <span className="glyph">{theme === 'dark' ? '☀' : '☾'}</span>
+      <span className="star" aria-hidden="true">
+        ✦
+      </span>
       {petalKey > 0 && (
         <i
           key={petalKey}
