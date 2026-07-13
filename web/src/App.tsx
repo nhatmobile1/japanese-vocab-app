@@ -35,13 +35,13 @@ function sourceBadges(r: SearchResultWord): { text: string; tb: boolean }[] {
 
 function WordRows({
   rows,
-  sel,
-  onSel,
+  highlight,
+  onHover,
   onOpen,
 }: {
   rows: SearchResultWord[];
-  sel: number;
-  onSel: (i: number) => void;
+  highlight: number;
+  onHover: (i: number | null) => void;
   onOpen: (r: SearchResultWord) => void;
 }) {
   return (
@@ -49,10 +49,10 @@ function WordRows({
       {rows.map((r, i) => (
         <li
           key={`${r.normTerm ?? r.term}-${i}`}
-          className={i === sel ? 'result selected' : 'result'}
+          className={i === highlight ? 'result selected' : 'result'}
           style={{ '--i': Math.min(i, 12) } as React.CSSProperties}
           onClick={() => onOpen(r)}
-          onMouseEnter={() => onSel(i)}
+          onMouseEnter={() => onHover(i)}
         >
           <span className="term">{r.term}</span>
           {r.reading && r.reading !== r.term && <span className="reading">{r.reading}</span>}
@@ -80,6 +80,7 @@ export default function App() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
   const [sel, setSel] = useState(0);
+  const [hover, setHover] = useState<number | null>(null);
   const [detail, setDetail] = useState<SearchResultWord | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -130,6 +131,7 @@ export default function App() {
       try {
         setResults(await searchApi(q, kind, ctrl.signal));
         setSel(0);
+        setHover(null);
         setError(null);
         setWave((w) => w + 1);
       } catch (err) {
@@ -161,10 +163,11 @@ export default function App() {
         setWave((w) => w + 1);
         setPage(0);
         setSel(0);
+        setHover(null);
         setError(null);
       } catch (err) {
         if (!(err instanceof DOMException && err.name === 'AbortError')) {
-          setError('Couldn’t load the list — is the server running?');
+          setError('Couldn\'t load the list — is the server running?');
         }
       }
     })();
@@ -190,7 +193,7 @@ export default function App() {
       setPage(reqPage);
       setError(null);
     } catch {
-      setError('Couldn’t load more — is the server running?');
+      setError('Couldn\'t load more — is the server running?');
     } finally {
       setLoadingMore(false);
     }
@@ -217,17 +220,20 @@ export default function App() {
   }, [detail, settingsOpen]);
 
   const navRows = searching ? results : browsing && kind !== 'sentence' ? words : [];
+  const highlight = hover ?? sel;
 
   const onInputKey = (e: React.KeyboardEvent) => {
     if (e.nativeEvent.isComposing || e.keyCode === 229) return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setSel((s) => Math.min(s + 1, navRows.length - 1));
+      setSel(Math.min(highlight + 1, navRows.length - 1));
+      setHover(null);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setSel((s) => Math.max(s - 1, 0));
-    } else if (e.key === 'Enter' && navRows[sel]) {
-      setDetail(navRows[sel]);
+      setSel(Math.max(highlight - 1, 0));
+      setHover(null);
+    } else if (e.key === 'Enter' && navRows[highlight]) {
+      setDetail(navRows[highlight]);
     }
   };
 
@@ -317,22 +323,22 @@ export default function App() {
       {detail ? (
         <WordDetail key={detail.normTerm ?? detail.term} result={detail} onBack={() => setDetail(null)} />
       ) : searching ? (
-        <ul className="results cascade" key={wave}>
-          <WordRows rows={results} sel={sel} onSel={setSel} onOpen={setDetail} />
-          {results.length === 0 && !error && <li className="empty">No matches for “{q}”</li>}
+        <ul className="results cascade" key={wave} onMouseLeave={() => setHover(null)}>
+          <WordRows rows={results} highlight={highlight} onHover={setHover} onOpen={setDetail} />
+          {results.length === 0 && !error && <li className="empty">No matches for "{q}"</li>}
         </ul>
       ) : browsing ? (
         <>
           {kind === 'sentence' ? (
             <SentenceTimeline entries={sentences} />
           ) : (
-            <ul className="results cascade" key={wave}>
-              <WordRows rows={words} sel={sel} onSel={setSel} onOpen={setDetail} />
+            <ul className="results cascade" key={wave} onMouseLeave={() => setHover(null)}>
+              <WordRows rows={words} highlight={highlight} onHover={setHover} onOpen={setDetail} />
             </ul>
           )}
           {loaded < total && (
             <button type="button" className="load-more" onClick={loadMore} disabled={loadingMore}>
-              {loadingMore ? 'Loading…' : `Load more (${loaded} of ${total})`}
+              {loadingMore ? 'Loading...' : `Load more (${loaded} of ${total})`}
             </button>
           )}
         </>
